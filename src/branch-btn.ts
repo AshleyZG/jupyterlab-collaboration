@@ -14,7 +14,9 @@ import {
     NotebookActions, NotebookPanel, INotebookModel
   } from '@jupyterlab/notebook';
   
-    
+  
+const WRAPPER_WIDTH: number = 100;
+
 /**
  * A notebook widget extension that adds a button to the toolbar.
  */
@@ -76,9 +78,13 @@ function subdivideCell(panel: NotebookPanel){
   var wrapper = panel.content.node.children[activeCellIndex];
   var newCell = panel.model.contentFactory.createCell('code', {});
   panel.model.insertCell(activeCellIndex+1, newCell);
-  // panel.model.ycells.insert(activeCellIndex+1, newCell);
   wrapper.appendChild(panel.content.node.children[activeCellIndex+1]);
 
+  console.log('adjust width of cells in wrapper');
+  var newWidth = WRAPPER_WIDTH/wrapper.children.length;
+  for (var i=0; i<wrapper.children.length; i++){
+    wrapper.children[i].setAttribute("style", "width:"+newWidth.toString()+"%");
+  }
 
   
 }
