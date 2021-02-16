@@ -7,3 +7,8 @@
     /* height: 100%; */
     background-color: crimson;
 }
+
+.hide-tab {
+    height: 20%;
+    background-color: rgb(218, 247, 214);
+}
