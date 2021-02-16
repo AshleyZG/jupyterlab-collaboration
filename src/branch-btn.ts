@@ -15,7 +15,8 @@ import {
   } from '@jupyterlab/notebook';
   
   
-const WRAPPER_WIDTH: number = 100;
+const WRAPPER_WIDTH: number = 95;
+const SIDE_WIDTH:number = 5;
 
 /**
  * A notebook widget extension that adds a button to the toolbar.
@@ -30,9 +31,8 @@ class ButtonExtension implements DocumentRegistry.IWidgetExtension<NotebookPanel
       // console.log('TODO');
       subdivideCell(panel);
       NotebookActions.runAll(panel.content, context.sessionContext);
-      
-
     };
+
     let button = new ToolbarButton({
       className: 'myButton',
       iconClass: 'fa fa-fast-forward',
@@ -69,8 +69,8 @@ function subdivideCell(panel: NotebookPanel){
     var newWrapper = document.createElement('div');
     newWrapper.classList.add('wrapper');
     newWrapper.appendChild(activeCell.node);
-
     panel.content.node.insertBefore(newWrapper, panel.content.node.children[activeCellIndex])
+
   }
 
   console.log('create a new cell and insert it to the wrapper');
@@ -79,21 +79,41 @@ function subdivideCell(panel: NotebookPanel){
   panel.model.insertCell(activeCellIndex+1, newCell);
   wrapper.appendChild(panel.content.node.children[activeCellIndex+1]);
 
+
+  console.log('add hidebar and move it to last');
+  if (isInWrapper){
+    wrapper.appendChild(wrapper.children[wrapper.children.length-2]);
+  }else{
+    // console.log('add hide box to the right')
+    var hideBox = document.createElement('div');
+    hideBox.classList.add('hide-box');
+    hideBox.setAttribute("style",  "width:"+SIDE_WIDTH.toString()+"%")
+
+    wrapper.appendChild(hideBox);
+
+  }
+
   console.log('adjust width of cells in wrapper');
   adjustWidthForWrapper(wrapper);
+
+
 
   document.addEventListener("keydown", event => {
     if (event.key==="i"){
       panel.content.activeCell.node.remove();
       adjustWidthForWrapper(wrapper);
+    }else if (event.key==="h"){
+      console.log("TODO: hide cell");
     }
   });
 
 }
 
+
+
 function adjustWidthForWrapper(wrapper: Element){
-  var newWidth = WRAPPER_WIDTH/wrapper.children.length;
-  for (var i=0; i<wrapper.children.length; i++){
+  var newWidth = WRAPPER_WIDTH/(wrapper.children.length-1);
+  for (var i=0; i<wrapper.children.length-1; i++){
     wrapper.children[i].setAttribute("style", "width:"+newWidth.toString()+"%");
   }
 }
