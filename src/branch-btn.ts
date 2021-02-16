@@ -103,10 +103,19 @@ function subdivideCell(panel: NotebookPanel){
       panel.content.activeCell.node.remove();
       adjustWidthForWrapper(wrapper);
     }else if (event.key==="h"){
-      console.log("TODO: hide cell");
+      hideCell(panel, wrapper);
     }
   });
+}
 
+function hideCell(panel:NotebookPanel, wrapper:Element){
+  console.log("TODO: hide cell");
+  const cellID:string = panel.content.activeCell.model.id;
+  console.log('hide cell ', cellID);
+  var tab = document.createElement('div');
+  tab.id = cellID;
+  tab.classList.add('hide-tab');
+  wrapper.lastChild.appendChild(tab);
 }
 
 
