@@ -71,7 +71,6 @@ function subdivideCell(panel: NotebookPanel){
     newWrapper.appendChild(activeCell.node);
 
     panel.content.node.insertBefore(newWrapper, panel.content.node.children[activeCellIndex])
-    // console.log('TODO11！！！');
   }
 
   console.log('create a new cell and insert it to the wrapper');
@@ -81,10 +80,20 @@ function subdivideCell(panel: NotebookPanel){
   wrapper.appendChild(panel.content.node.children[activeCellIndex+1]);
 
   console.log('adjust width of cells in wrapper');
+  adjustWidthForWrapper(wrapper);
+
+  document.addEventListener("keydown", event => {
+    if (event.key==="i"){
+      panel.content.activeCell.node.remove();
+      adjustWidthForWrapper(wrapper);
+    }
+  });
+
+}
+
+function adjustWidthForWrapper(wrapper: Element){
   var newWidth = WRAPPER_WIDTH/wrapper.children.length;
   for (var i=0; i<wrapper.children.length; i++){
     wrapper.children[i].setAttribute("style", "width:"+newWidth.toString()+"%");
   }
-
-  
 }
