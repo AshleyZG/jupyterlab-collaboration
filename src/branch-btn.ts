@@ -115,10 +115,17 @@ function hideCell(panel:NotebookPanel, wrapper:Element){
   var tab = document.createElement('div');
   tab.id = cellID;
   tab.classList.add('hide-tab');
+  tab.addEventListener("mouseover", showCellTag(tab));
   wrapper.lastChild.appendChild(tab);
 }
 
-
+function showCellTag(tab:Element){
+  function showCellTag_fn(){
+    console.log('TODO: show cellID here');
+    console.log(tab.id);
+  }
+  return showCellTag_fn;
+}
 
 function adjustWidthForWrapper(wrapper: Element){
   var newWidth = WRAPPER_WIDTH/(wrapper.children.length-1);
