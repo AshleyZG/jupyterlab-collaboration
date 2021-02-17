@@ -17,3 +17,8 @@
 .hide-tab:hover{
     color: black;
 }
+
+.hidden-cell{
+    display: none;
+    /* visibility: hidden; */
+}

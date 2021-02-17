@@ -96,8 +96,6 @@ function subdivideCell(panel: NotebookPanel){
   console.log('adjust width of cells in wrapper');
   adjustWidthForWrapper(wrapper);
 
-
-
   document.addEventListener("keydown", event => {
     if (event.key==="i"){
       panel.content.activeCell.node.remove();
@@ -109,6 +107,9 @@ function subdivideCell(panel: NotebookPanel){
 }
 
 function hideCell(panel:NotebookPanel, wrapper:Element){
+  if (panel.content.activeCell.node.classList.contains('hidden-cell')){
+    return;
+  }
   console.log("TODO: hide cell");
   const cellID:string = panel.content.activeCell.model.id;
   console.log('hide cell ', cellID);
@@ -117,14 +118,15 @@ function hideCell(panel:NotebookPanel, wrapper:Element){
   tab.innerHTML = "TODO";
 
   tab.classList.add('hide-tab');
-
   wrapper.lastChild.appendChild(tab);
-
-
+  panel.content.activeCell.node.classList.add('hidden-cell');
+  adjustWidthForWrapper(wrapper);
 }
 
 function adjustWidthForWrapper(wrapper: Element){
-  var newWidth = WRAPPER_WIDTH/(wrapper.children.length-1);
+  var nHiddenCells = wrapper.getElementsByClassName('hidden-cell').length;
+  var nActiveCells = wrapper.children.length-nHiddenCells-1; 
+  var newWidth = WRAPPER_WIDTH/nActiveCells;
   for (var i=0; i<wrapper.children.length-1; i++){
     wrapper.children[i].setAttribute("style", "width:"+newWidth.toString()+"%");
   }
