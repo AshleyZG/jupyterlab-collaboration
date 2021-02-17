@@ -114,17 +114,18 @@ function hideCell(panel:NotebookPanel, wrapper:Element){
   console.log('hide cell ', cellID);
   var tab = document.createElement('div');
   tab.id = cellID;
+  tab.innerHTML = cellID;
+  tab.style.color = "transparent";
   tab.classList.add('hide-tab');
-  tab.addEventListener("mouseover", showCellTag(tab));
-  wrapper.lastChild.appendChild(tab);
-}
 
-function showCellTag(tab:Element){
-  function showCellTag_fn(){
-    console.log('TODO: show cellID here');
-    console.log(tab.id);
-  }
-  return showCellTag_fn;
+  tab.addEventListener("mouseover", e=>{
+    tab.style.color = "black";
+  });
+  tab.addEventListener("mouseleave", e=>{
+    tab.style.color = "transparent";
+  })
+
+  wrapper.lastChild.appendChild(tab);
 }
 
 function adjustWidthForWrapper(wrapper: Element){
