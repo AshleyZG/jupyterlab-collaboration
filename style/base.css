@@ -11,4 +11,9 @@
 .hide-tab {
     height: 20%;
     background-color: rgb(218, 247, 214);
+    color: transparent;
+}
+
+.hide-tab:hover{
+    color: black;
 }
