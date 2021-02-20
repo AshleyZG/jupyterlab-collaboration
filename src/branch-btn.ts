@@ -123,7 +123,6 @@ function hideCell(panel:NotebookPanel, wrapper:Element){
   if (panel.content.activeCell.node.classList.contains('hidden-cell')){
     return;
   }
-  console.log("TODO: hide cell");
   const cellID:string = panel.content.activeCell.model.id;
   console.log('hide cell ', cellID);
   var tab = document.createElement('div');
@@ -133,13 +132,20 @@ function hideCell(panel:NotebookPanel, wrapper:Element){
   tab.innerHTML = tag;
   tab.classList.add('hide-tab');
 
-  tab.onclick = function(){
+  tab.onclick = function(event){
+    var tag = (event.target as HTMLElement).getAttribute('tag');
     for (var i=0; i<wrapper.children.length-1; i++){
-      console.log('');
-      // if id ===cell id: show this cell
+      var cellTag:string = (wrapper.children[i].getElementsByClassName('CodeMirror-line')[0] as HTMLElement).innerText.slice(1);
+
+      // if id ===cell id: remove class "hidden-cell" for this cell 
       // adjust width
       // break;
+      if (tag===cellTag){
+        wrapper.children[i].classList.remove("hidden-cell");
+        adjustWidthForWrapper(wrapper);
+      }
     }
+    (event.target as HTMLElement).remove();
   };
 
   wrapper.lastChild.appendChild(tab);
