@@ -13,7 +13,14 @@ import {
 import {
     NotebookActions, NotebookPanel, INotebookModel
   } from '@jupyterlab/notebook';
-  
+
+import {
+  numToString
+} from './utils';
+
+import {
+  ICellModel
+} from '@jupyterlab/cells';
   
 const WRAPPER_WIDTH: number = 95;
 const SIDE_WIDTH:number = 5;
@@ -65,6 +72,10 @@ function subdivideCell(panel: NotebookPanel){
     console.log('active cell is in a wrapper');
 
   }else{
+    console.log('set tag for initial cell');
+    activeCell.model.setValue('#'+activeCellIndex.toString()+'A\n'+activeCell.model.getValue())
+    activeCell.node.id = activeCell.model.getValue().split('\n')[0];
+
     console.log('active cell not in wrapper. Create a new wrapper for it');
     var newWrapper = document.createElement('div');
     newWrapper.classList.add('wrapper');
@@ -76,7 +87,9 @@ function subdivideCell(panel: NotebookPanel){
   console.log('create a new cell and insert it to the wrapper');
   var wrapper = panel.content.node.children[activeCellIndex];
   var newCell = panel.model.contentFactory.createCell('code', {});
+  // newCell. = newCell.getValue().split('n')[0];
   panel.model.insertCell(activeCellIndex+1, newCell);
+  newCell.setValue('#'+activeCellIndex.toString()+numToString(wrapper.children.length)+'\n');
   wrapper.appendChild(panel.content.node.children[activeCellIndex+1]);
 
 
@@ -115,9 +128,20 @@ function hideCell(panel:NotebookPanel, wrapper:Element){
   console.log('hide cell ', cellID);
   var tab = document.createElement('div');
   tab.id = cellID;
-  tab.innerHTML = "TODO";
-
+  var tag:string = getTagOfCell(panel.content.activeCell.model);
+  tab.setAttribute("tag", tag);
+  tab.innerHTML = tag;
   tab.classList.add('hide-tab');
+
+  tab.onclick = function(){
+    for (var i=0; i<wrapper.children.length-1; i++){
+      console.log('');
+      // if id ===cell id: show this cell
+      // adjust width
+      // break;
+    }
+  };
+
   wrapper.lastChild.appendChild(tab);
   panel.content.activeCell.node.classList.add('hidden-cell');
   adjustWidthForWrapper(wrapper);
@@ -130,4 +154,8 @@ function adjustWidthForWrapper(wrapper: Element){
   for (var i=0; i<wrapper.children.length-1; i++){
     wrapper.children[i].setAttribute("style", "width:"+newWidth.toString()+"%");
   }
+}
+
+function getTagOfCell(cellModel: ICellModel){
+  return cellModel.getValue().split('\n')[0].slice(1);
 }
