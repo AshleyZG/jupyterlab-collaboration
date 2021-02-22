@@ -14,6 +14,10 @@ import {
   ButtonExtension
 } from './branch-btn';
 
+import {
+  LockButtonExtension
+} from './lock-btn';
+
 /**
  * The plugin registration information.
  */
@@ -30,6 +34,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
  */
 function activate(app: JupyterFrontEnd) {
   app.docRegistry.addWidgetExtension('Notebook', new ButtonExtension());
+  app.docRegistry.addWidgetExtension('Notebook', new LockButtonExtension());
 };
 
 
