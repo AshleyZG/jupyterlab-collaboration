@@ -74,4 +74,5 @@ async function lockCell(panel: NotebookPanel){
     const storeCode =storeCodeLines.join("\n");
     console.log(storeCode);
     console.log(activeCell.model.getValue());
+    activeCell.model.setValue(storeCode+"\n"+activeCell.model.getValue());
 }
