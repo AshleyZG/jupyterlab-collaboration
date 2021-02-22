@@ -42,13 +42,11 @@ class LockButtonExtension implements DocumentRegistry.IWidgetExtension<NotebookP
     let callback = () => {
       console.log('TODO');
       lockCell(panel);
-    //   NotebookActions.runAll(panel.content, context.sessionContext);
     };
 
     let button = new ToolbarButton({
       className: 'myLockButton',
       icon: addIcon,
-    //   iconClass: 'fa fa-fast-forward',
       onClick: callback,
       tooltip: 'Lock cell'
     });
@@ -67,6 +65,8 @@ async function lockCell(panel: NotebookPanel){
     newCell.setValue('%who_ls');
     panel.content.activeCellIndex = getActiveCellIndex(panel, isInWrapper)-1;
     await NotebookActions.run(panel.content, panel.sessionContext);
-    const output:string = (panel.content.activeCell.node.getElementsByClassName("jp-OutputArea-output")[0] as HTMLElement).innerText;
-    console.log(output);
+    const output:any = (panel.content.activeCell.node.getElementsByClassName("jp-OutputArea-output")[0] as HTMLElement).innerText;
+    // console.log(output);
+    var outputVars = JSON.parse(output.replaceAll("'", '"'));
+    console.log(outputVars);
 }
