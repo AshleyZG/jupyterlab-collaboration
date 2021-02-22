@@ -67,12 +67,13 @@ async function lockCell(panel: NotebookPanel){
     panel.content.activeCellIndex = getActiveCellIndex(panel, isInWrapper)-1;
     await NotebookActions.run(panel.content, panel.sessionContext);
     const output:any = (panel.content.activeCell.node.getElementsByClassName("jp-OutputArea-output")[0] as HTMLElement).innerText;
-    // console.log(output);
+
     var outputVars = JSON.parse(output.replaceAll("'", '"'));
-    console.log(outputVars);
+
     const storeCodeLines:string[] = outputVars.map((i:string)=>{return "%store "+i});
     const storeCode =storeCodeLines.join("\n");
-    console.log(storeCode);
-    console.log(activeCell.model.getValue());
-    activeCell.model.setValue(storeCode+"\n"+activeCell.model.getValue());
+    const storeRCodeLines:string[] = outputVars.map((i:string)=>{return "%store -r "+i});
+    const storeRCode = storeRCodeLines.join("\n");
+
+    activeCell.model.setValue(storeCode+"\n"+activeCell.model.getValue()+"\n"+storeRCode);
 }
