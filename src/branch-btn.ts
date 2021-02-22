@@ -11,11 +11,11 @@ import {
   } from '@jupyterlab/docregistry';
   
 import {
-    NotebookActions, NotebookPanel, INotebookModel
+     NotebookPanel, INotebookModel //NotebookActions,
   } from '@jupyterlab/notebook';
 
 import {
-  numToString
+  numToString, getActiveCellIndex
 } from './utils';
 
 import {
@@ -37,7 +37,7 @@ class ButtonExtension implements DocumentRegistry.IWidgetExtension<NotebookPanel
     let callback = () => {
       // console.log('TODO');
       subdivideCell(panel);
-      NotebookActions.runAll(panel.content, context.sessionContext);
+      // NotebookActions.runAll(panel.content, context.sessionContext);
     };
 
     let button = new ToolbarButton({
@@ -54,13 +54,7 @@ class ButtonExtension implements DocumentRegistry.IWidgetExtension<NotebookPanel
   }
 }
 
-function getActiveCellIndex(panel: NotebookPanel, isInWrapper: boolean){
-  if (isInWrapper){
-    return Array.prototype.indexOf.call(panel.content.node.children, panel.content.activeCell.node.parentElement);
-  }else{
-    return Array.prototype.indexOf.call(panel.content.node.children, panel.content.activeCell.node);
-  }
-}
+
 
 function subdivideCell(panel: NotebookPanel){
 
