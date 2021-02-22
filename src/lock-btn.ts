@@ -24,10 +24,6 @@ import {
   getActiveCellIndex
 } from './utils';
 
-// import {
-//   ICellModel
-// } from '@jupyterlab/cells';
-
 
 
 /**
@@ -70,12 +66,13 @@ async function lockCell(panel: NotebookPanel){
 
     var outputVars = JSON.parse(output.replaceAll("'", '"'));
 
-    const storeCodeLines:string[] = outputVars.map((i:string)=>{return "%store "+i});
-    const storeCode =storeCodeLines.join("\n");
-    const storeRCodeLines:string[] = outputVars.map((i:string)=>{return "%store -r "+i});
-    const storeRCode = storeRCodeLines.join("\n");
+    const storeCodeLines:string[] = outputVars.map((i:string)=>{return "    %store "+i});
+    const storeCode ="if True:#store var value\n"+storeCodeLines.join("\n");
+    const storeRCodeLines:string[] = outputVars.map((i:string)=>{return "    %store -r "+i});
+    const storeRCode = "if True:#reset var value\n"+storeRCodeLines.join("\n");
 
     activeCell.model.setValue(storeCode+"\n"+activeCell.model.getValue()+"\n"+storeRCode);
 
     panel.model.deleteCell(getActiveCellIndex(panel, false),1);
+    // (panel.node.getElementsByClassName("jp-ToolbarButton")[1] as HTMLElement).click();
 }
