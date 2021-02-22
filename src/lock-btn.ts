@@ -60,14 +60,13 @@ class LockButtonExtension implements DocumentRegistry.IWidgetExtension<NotebookP
   }
 }
 
-function lockCell(panel: NotebookPanel){
+async function lockCell(panel: NotebookPanel){
     const isInWrapper: boolean = panel.content.activeCell.node.parentElement.classList.contains("wrapper");
     var newCell = panel.model.contentFactory.createCell('code', {});
     panel.model.insertCell(getActiveCellIndex(panel, isInWrapper), newCell);
     newCell.setValue('%who_ls');
     panel.content.activeCellIndex = getActiveCellIndex(panel, isInWrapper)-1;
-    NotebookActions.run(panel.content, panel.sessionContext);
-    console.log('TODO');
+    await NotebookActions.run(panel.content, panel.sessionContext);
     const output:string = (panel.content.activeCell.node.getElementsByClassName("jp-OutputArea-output")[0] as HTMLElement).innerText;
     console.log(output);
 }
