@@ -76,4 +76,6 @@ async function lockCell(panel: NotebookPanel){
     const storeRCode = storeRCodeLines.join("\n");
 
     activeCell.model.setValue(storeCode+"\n"+activeCell.model.getValue()+"\n"+storeRCode);
+
+    panel.model.deleteCell(getActiveCellIndex(panel, false),1);
 }
