@@ -74,5 +74,4 @@ async function lockCell(panel: NotebookPanel){
     activeCell.model.setValue(storeCode+"\n"+activeCell.model.getValue()+"\n"+storeRCode);
 
     panel.model.deleteCell(getActiveCellIndex(panel, false),1);
-    // (panel.node.getElementsByClassName("jp-ToolbarButton")[1] as HTMLElement).click();
 }
