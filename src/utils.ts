@@ -33,3 +33,5 @@ export  function getActiveCellIndex(panel: NotebookPanel, isInWrapper: boolean){
       return Array.prototype.indexOf.call(panel.content.node.children, panel.content.activeCell.node);
     }
   }
+
+

@@ -1,7 +1,9 @@
 import {
     IDisposable, DisposableDelegate
   } from '@lumino/disposable';
-
+  import { 
+    PanelLayout, Panel
+  } from '@lumino/widgets';
 import {
     ToolbarButton
   } from '@jupyterlab/apputils';
@@ -15,15 +17,21 @@ import {
   } from '@jupyterlab/notebook';
 
 import {
-  numToString, getActiveCellIndex
+  numToString, getActiveCellIndex//, getCellRowIndex
 } from './utils';
 
 import {
+  CodeCell,
   ICellModel
 } from '@jupyterlab/cells';
-  
+
+import {
+  OutputArea,
+} from '@jupyterlab/outputarea';
+
 const WRAPPER_WIDTH: number = 95;
 const SIDE_WIDTH:number = 5;
+const CELL_OUTPUT_AREA_CLASS = 'jp-Cell-outputArea';
 
 /**
  * A notebook widget extension that adds a button to the toolbar.
@@ -111,6 +119,9 @@ function subdivideCell(panel: NotebookPanel){
       hideCell(panel, wrapper);
     }
   });
+
+
+  addNewBranchOutput(panel);
 }
 
 function hideCell(panel:NotebookPanel, wrapper:Element){
@@ -158,4 +169,58 @@ function adjustWidthForWrapper(wrapper: Element){
 
 function getTagOfCell(cellModel: ICellModel){
   return cellModel.getValue().split('\n')[0].slice(1);
+}
+
+
+function addNewBranchOutput(panel: NotebookPanel){
+  console.log("add output");
+  // calculate nOutputs for each row
+  var nCellPerRow:number[] = [];
+  var nOutputPerRow:number[] = [1];
+
+  for (let row of panel.content.node.children){
+    var n:number;
+    if (row.classList.contains("wrapper")){
+      n = row.getElementsByClassName("jp-Cell").length;
+    }
+    else{
+      n = 1;
+    }
+    nCellPerRow.push(n);
+    nOutputPerRow.push(n*nOutputPerRow.slice(-1)[0]);
+  }
+  nOutputPerRow = nOutputPerRow.slice(0,-1);
+  console.log(nCellPerRow);
+  console.log(nOutputPerRow);
+
+  var nOutputList:number[] = [];
+  for (var i = 0; i<nCellPerRow.length; i++){
+    // var tarray = [nOutputPerRow[i]]*nCellPerRow[i];
+    nOutputList = nOutputList.concat(Array(nCellPerRow[i]).fill(nOutputPerRow[i]));
+  }
+  console.log(nOutputList);
+  // update outputs for each cell
+  var cells = panel.content.widgets;
+  console.log(cells.length);
+  for (var i=0; i<cells.length; i++){
+    var cell = cells[i] as CodeCell;
+    if (cell.model.type!=="code"){
+      continue;
+    }
+    var nOutput = nOutputList[i];
+    for (var ii=0; ii<nOutput-cell.node.getElementsByClassName("jp-OutputArea").length; ii++){
+      const newOutput = new OutputArea({
+        model: cell.model.outputs,
+        rendermime: cell.outputArea.rendermime,
+        contentFactory: cell.contentFactory
+      });
+      newOutput.addClass(CELL_OUTPUT_AREA_CLASS);
+      // this line of code is in source, but not work here. 
+      // maybe add a function "addOutput" to class CodeCell and enable this line
+      // newOutput.outputLengthChanged.connect(cell._outputLengthHandler, cell);
+      ((cell.layout as PanelLayout).widgets[2] as Panel).addWidget(newOutput);
+  
+    }
+
+  }
 }
